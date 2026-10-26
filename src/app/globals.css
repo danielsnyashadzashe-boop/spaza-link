@@ -1,26 +1,213 @@
+/* Clerk styles sit in their own layer so Tailwind utilities can restyle its components. */
+@layer theme, base, clerk, components, utilities;
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@clerk/ui/themes/shadcn.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+/*
+ * SpazaLink palette, taken from the logo:
+ *   navy  #062654  trust, structure, primary actions
+ *   pink  #F2366D  energy, highlights, the "Link"
+ *   mustard #F4AF23  attention, savings, Quick Fix
+ * on a soft blush paper. Stock status keeps its own green / amber / red.
+ */
+@theme {
+  --color-paper: #fff7f9;
+  --color-paper-2: #fce8ee;
+  --color-ink: #0b1b3a;
+  --color-line: #f1dce3;
+
+  --color-brand: #062654;
+  --color-brand-600: #0d3a78;
+  --color-brand-50: #e9eef7;
+  --color-pink: #f2366d;
+  --color-pink-600: #d81f57;
+  --color-pink-50: #fde7ee;
+  --color-mustard: #f4af23;
+  --color-mustard-700: #8a5a00;
+  --color-mustard-50: #fef4dc;
+
+  --color-ok: #1e8e5a;
+  --color-ok-50: #e5f4ec;
+  --color-warn: #d99a00;
+  --color-warn-50: #fdf3d6;
+  --color-bad: #d63a2f;
+  --color-bad-50: #fce9e7;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
+  --font-display: var(--font-bricolage);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --shadow-card: 0 1px 0 rgb(11 27 58 / 0.04), 0 8px 24px -12px rgb(11 27 58 / 0.14);
+  --shadow-lift: 0 18px 40px -18px rgb(6 38 84 / 0.45);
+
+  --animate-slide-down: slide-down 420ms cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+  --animate-fade-up: fade-up 360ms ease-out both;
+  --animate-pulse-ring: pulse-ring 1.8s ease-out infinite;
+  --animate-pop: pop 420ms cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 8s ease-in-out infinite;
+  --animate-grow-x: grow-x 900ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
+  --animate-shine: shine 2.6s ease-in-out infinite;
+  --animate-blink: blink 1.6s ease-in-out infinite;
+
+  @keyframes slide-down {
+    from { transform: translateY(-120%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes fade-up {
+    from { transform: translateY(8px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes pop {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @keyframes float {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -8px; }
+  }
+  @keyframes grow-x {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes shine {
+    0% { transform: translateX(-120%) skewX(-20deg); }
+    60%, 100% { transform: translateX(260%) skewX(-20deg); }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgb(242 54 109 / 0.45); }
+    100% { box-shadow: 0 0 0 10px rgb(242 54 109 / 0); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* shadcn/ui tokens, mapped onto the SpazaLink palette. */
+@theme inline {
+  --font-heading: var(--font-bricolage);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: #fff7f9;
+  --foreground: #0b1b3a;
+  --card: #ffffff;
+  --card-foreground: #0b1b3a;
+  --popover: #ffffff;
+  --popover-foreground: #0b1b3a;
+  --primary: #062654;
+  --primary-foreground: #ffffff;
+  --secondary: #fce8ee;
+  --secondary-foreground: #062654;
+  --muted: #fce8ee;
+  --muted-foreground: #5b6478;
+  --accent: #fde7ee;
+  --accent-foreground: #062654;
+  --destructive: #d63a2f;
+  --border: #f1dce3;
+  --input: #ecd3dc;
+  --ring: #f2366d;
+  --chart-1: #062654;
+  --chart-2: #f2366d;
+  --chart-3: #f4af23;
+}
+
+html {
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Dotted texture echoing hand-painted township shopfronts. */
+.bg-weave {
+  background-image: radial-gradient(circle at 1px 1px, rgb(11 27 58 / 0.07) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-pink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* Scroll reveal: elements start slightly low and transparent, then settle in (see components/motion.tsx). */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* A soft light sweep across hero buttons. */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+  animation: var(--animate-shine);
+  z-index: -1;
 }
